@@ -1,0 +1,40 @@
+.decl block_use(block:symbol, var:symbol)
+.decl block_def(block:symbol, var:symbol)
+.decl block_succ(succ:symbol, pred:symbol)
+
+block_def("B1", "R10").
+block_def("B1", "R11").
+block_use("B1", "R11").
+
+block_def("B2", "R12").
+block_def("B2", "R13").
+block_use("B2", "R13").
+
+block_def("B3", "R14").
+block_def("B3", "R15").
+block_use("B3", "R12").
+block_use("B3", "R13").
+block_use("B3", "R14").
+block_use("B3", "R15").
+
+block_def("B4", "R16").
+block_use("B4", "R16").
+block_use("B4", "R10").
+block_use("B4", "R12").
+
+block_succ("B2", "B1").
+block_succ("B3", "B2").
+block_succ("B2", "B3").
+block_succ("B4", "B2").
+
+.decl live_out(block:symbol, var:symbol)
+.output live_out
+.decl live_in(block:symbol, var:symbol)
+.output live_in
+
+live_out(b, v) :- block_succ(s, b), live_in(s, v).
+live_in(b, v) :- (live_out(b, v); block_use(b, v)), !block_def(b, v).
+
+// live_out(n, v) :- block_succ(m, n),
+//                   block_use(m, v),
+//                   (live_out(m, v); !block_def(m, v)).
