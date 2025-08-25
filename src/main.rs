@@ -73,5 +73,4 @@ fn main() {
     prog.run();
     println!("live out: {:?}", prog.live_out);
     println!("live in: {:?}", prog.live_in);
-    println!("{}", prog.scc_times_summary());
 }
